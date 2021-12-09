@@ -9,10 +9,12 @@ let numeros = document.querySelector('.d-1-3');
 
 let etapaAtual = 0;
 let numero = '';
+let brancoVoto = false;
 
 const comecarEtapa = () =>{
     let etapa = etapas[etapaAtual];
     let numeroHTML = '';
+    brancoVoto = false;
 
      for(let i = 0;  i< etapa.numeros; i++){
 
@@ -52,7 +54,13 @@ const atualizaInterface = () =>{
         let fotosHTML = '';
 
         for(let i in candidato.fotos){
-            fotosHTML += `<div class="d-1-image"><img src="images/${candidato.fotos[i].url}" alt="" /> ${candidato.fotos[i].legenda} </div>`
+
+            if(candidato.fotos[i].small){
+                fotosHTML += `<div class="d-1-image small"><img src="images/${candidato.fotos[i].url}" alt="" /> ${candidato.fotos[i].legenda} </div>`
+            } else {
+                fotosHTML += `<div class="d-1-image"><img src="images/${candidato.fotos[i].url}" alt="" /> ${candidato.fotos[i].legenda} </div>`
+            }
+            
         }
 
         lateral.innerHTML = fotosHTML;
@@ -79,15 +87,40 @@ const clicou = (n) =>{
 }
 
 const branco = () =>{
-
+    if(numero === ''){
+        brancoVoto = true;
+        seuVotoPara.style.display =  'block';
+        aviso.style.display = 'block';
+        numeros.innerHTML = '';
+        descricao.innerHTML = '<div class="aviso--grande pisca">VOTO EM BRANCO </div>';
+        document.querySelector('.aviso--grande.pisca').style.fontSize = '30px';
+    }
 }
 
 const corrige = () =>{
-
+    numero = '';
+    comecarEtapa();
 }
 
 const confirma = () =>{
+    let etapa = etapas[etapaAtual];
+    let votoConfirmado = false;
 
+    if(brancoVoto === true){
+        votoConfirmado = true;
+    } else if(numero.length === etapa.numeros) {
+        votoConfirmado = true;
+    }
+
+    if(votoConfirmado){
+        etapaAtual++;
+        if(etapas[etapaAtual] !== undefined){
+            numero = '';
+            comecarEtapa();
+        } else {
+            document.querySelector('.tela').innerHTML = '<div class="aviso--gigante pisca">FIM </div>';
+        }
+    }
 }
 
 
